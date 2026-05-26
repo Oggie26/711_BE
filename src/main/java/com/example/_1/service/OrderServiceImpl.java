@@ -162,6 +162,9 @@ public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpSer
         cart.getItems().clear();
         cart.setTotalPrice(BigDecimal.ZERO);
         cartRepository.save(cart);
+        order.setStatus(EnumOrderStatus.PENDING);
+        orderRepository.save(order);
+
     } else {
 
         List<OrderItem> items = cart.getItems().stream().map(cartItem ->
