@@ -184,6 +184,7 @@ public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpSer
                 throw new AppException(ErrorCode.OUT_OF_STOCK);
             }
             product.setStock(product.getStock() - cartItem.getQuantity());
+            productRepository.save(product);
             return OrderItem.builder()
                     .order(order)
                     .product(product)
