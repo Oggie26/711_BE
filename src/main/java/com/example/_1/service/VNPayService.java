@@ -28,8 +28,7 @@ public class VNPayService {
     @Value("${vnpay.url}")
     private String vnpUrl;
 
-    @Value("${vnpay.returnUrl}")
-    private String returnUrl;
+    private String returnUrl = "https://api.furnimart.click/api/payment/vnpay-return";
 
     @PostConstruct
     public void validateConfig() {

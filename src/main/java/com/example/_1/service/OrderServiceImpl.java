@@ -144,7 +144,21 @@ public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpSer
             .build();
 
     if (paymentMethod.equals(EnumPayment.CASH)) {
-        processStockReduction(cart, order);
+        List<OrderItem> orderItems = cart.getItems().stream().map(cartItem -> {
+            Product product = cartItem.getProduct();
+            if (product.getStock() < cartItem.getQuantity()) {
+                throw new AppException(ErrorCode.OUT_OF_STOCK);
+            }
+            product.setStock(product.getStock() - cartItem.getQuantity());
+            productRepository.save(product);
+            return OrderItem.builder()
+                    .order(order)
+                    .product(product)
+                    .quantity(cartItem.getQuantity())
+                    .price(cartItem.getPrice())
+                    .build();
+        }).toList();
+        order.getItems().addAll(orderItems);
         cart.getItems().clear();
         cart.setTotalPrice(BigDecimal.ZERO);
         cartRepository.save(cart);
@@ -176,24 +190,6 @@ public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpSer
 
     return mapToOrderResponse(savedOrder);
 }
-
-    private void processStockReduction(Cart cart, Order order) {
-        List<OrderItem> orderItems = cart.getItems().stream().map(cartItem -> {
-            Product product = cartItem.getProduct();
-            if (product.getStock() < cartItem.getQuantity()) {
-                throw new AppException(ErrorCode.OUT_OF_STOCK);
-            }
-            product.setStock(product.getStock() - cartItem.getQuantity());
-            productRepository.save(product);
-            return OrderItem.builder()
-                    .order(order)
-                    .product(product)
-                    .quantity(cartItem.getQuantity())
-                    .price(cartItem.getPrice())
-                    .build();
-        }).toList();
-        order.getItems().addAll(orderItems);
-    }
 
     @Transactional
     public OrderResponse updateOrder(OrderRequest orderRequest) {
