@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông báo từ hệ thống</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f3f4f6; width: 100%; margin: 0; padding: 40px 20px;">
+    <tr>
+        <td align="center">
+
+            <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+
+                <tr>
+                    <td align="center" style="background-color: #008061; padding: 35px 20px; border-top: 5px solid #e4252b;">
+                        <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 900; letter-spacing: 1px;">
+                            <span style="color: #e4252b;">7</span>-ELEVEN
+                        </h1>
+                        <p style="color: #ccfbf1; margin: 8px 0 0 0; font-size: 14px; font-weight: 500; font-style: italic;">
+                            Luôn mở cửa - Luôn tiện lợi
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding: 40px 35px; color: #374151; font-size: 15px; line-height: 1.6;">
+
+                        <p style="margin: 0 0 20px 0; font-size: 16px;">
+                            Xin chào <strong style="color: #111827; font-size: 18px;">[[${name}]]</strong>,
+                        </p>
+
+                        <p style="margin: 0 0 15px 0;">
+                            Cảm ơn bạn đã đồng hành cùng hệ thống cửa hàng trực tuyến của chúng tôi. Chúng tôi vừa nhận được một yêu cầu liên quan đến tài khoản của bạn.
+                        </p>
+                        <p style="margin: 0 0 35px 0;">
+                            Vui lòng nhấn vào nút bên dưới để tiến hành xác nhận và tiếp tục trải nghiệm các dịch vụ tiện ích.
+                        </p>
+
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td align="center">
+                                    <a th:href="${link}" style="display: inline-block; background-color: #e4252b; color: #ffffff; text-decoration: none; padding: 14px 35px; border-radius: 8px; font-weight: bold; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 6px rgba(228, 37, 43, 0.2);">
+                                        [[${button}]]
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="height: 1px; background-color: #e5e7eb; width: 100%; margin: 35px 0;"></div>
+
+                        <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 14px;">
+                            Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email hoặc liên hệ với bộ phận CSKH để được hỗ trợ bảo mật.
+                        </p>
+                        <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                            Trân trọng,<br>
+                            <strong style="color: #374151;">Đội ngũ 7-Eleven Vietnam</strong>
+                        </p>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="background-color: #f8fafc; padding: 25px 20px; border-top: 1px solid #f1f5f9;">
+                        <p style="margin: 0 0 8px 0; color: #94a3b8; font-size: 12px;">
+                            Email này được gửi tự động từ hệ thống, vui lòng không trả lời.
+                        </p>
+                        <p style="margin: 0 0 15px 0; color: #94a3b8; font-size: 12px;">
+                            &copy; 2026 7-Eleven Vietnam. Đã đăng ký bản quyền.
+                        </p>
+                        <p style="margin: 0;">
+                            <a href="#" style="color: #008061; text-decoration: underline; font-size: 12px; font-weight: 500;">
+                                Hủy đăng ký nhận thông báo
+                            </a>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

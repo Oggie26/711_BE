@@ -1,0 +1,19 @@
+package com.example._1.dto.response;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class CartResponse {
+    Long cartId;
+    String fullName;
+    List<CartItemResponse> items;
+    BigDecimal totalPrice;
+}
