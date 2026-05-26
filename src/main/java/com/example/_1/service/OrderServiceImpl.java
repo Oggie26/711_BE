@@ -55,6 +55,8 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
 
+        List<CartItem> cartItems = new ArrayList<>(cart.getItems());
+
         Order order = Order.builder()
                 .user(user)
                 .totalPrice(cart.getTotalPrice())
@@ -65,13 +67,14 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         if (paymentMethod.equals(EnumPayment.CASH)) {
-            List<OrderItem> orderItems = cart.getItems().stream().map(cartItem -> {
+            List<OrderItem> orderItems = cartItems.stream().map(cartItem -> {
                 Product product = cartItem.getProduct();
                 if (product.getStock() < cartItem.getQuantity()) {
                     throw new AppException(ErrorCode.OUT_OF_STOCK);
                 }
 
                 product.setStock(product.getStock() - cartItem.getQuantity());
+                productRepository.save(product);
 
                 return OrderItem.builder()
                         .order(order)
@@ -84,12 +87,8 @@ public class OrderServiceImpl implements OrderService {
             order.getItems().addAll(orderItems);
             order.setStatus(EnumOrderStatus.PAYMENT_SUCCESS);
 
-            cart.getItems().clear();
-            cart.setTotalPrice(BigDecimal.ZERO);
-            cartRepository.save(cart);
-
         } else {
-            List<OrderItem> items = cart.getItems().stream().map(cartItem ->
+            List<OrderItem> items = cartItems.stream().map(cartItem ->
                     OrderItem.builder()
                             .order(order)
                             .product(cartItem.getProduct())
@@ -101,6 +100,12 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Order savedOrder = orderRepository.save(order);
+
+        if (paymentMethod.equals(EnumPayment.CASH)) {
+            cart.getItems().clear();
+            cart.setTotalPrice(BigDecimal.ZERO);
+            cartRepository.save(cart);
+        }
 
         if (paymentMethod.equals(EnumPayment.VNPAY)) {
             String paymentUrl = vNPayService.createPaymentUrl(
