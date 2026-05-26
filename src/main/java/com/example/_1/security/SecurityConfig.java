@@ -44,9 +44,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of(
+        config.setAllowedOriginPatterns(List.of(
                 "https://711-fe.vercel.app",
-                "https://api.furnimart.click",
+                "https://*.furnimart.click",
                 "http://localhost:5173"
         ));
 
@@ -57,7 +57,6 @@ public class SecurityConfig {
         config.setAllowedHeaders(List.of("*"));
 
         config.setAllowCredentials(true);
-
         config.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -83,8 +82,6 @@ public class SecurityConfig {
                                 "/api/payment/**",
                                 "/api/products/**",
                                 "/api/categories/**",
-                                "/api/payment/**",
-                                "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
 

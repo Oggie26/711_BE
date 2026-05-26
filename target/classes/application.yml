@@ -25,7 +25,7 @@ vnpay:
   tmnCode: H9SLU363
   hashSecret: MH2TNFTKVRUU0O4I5VD373QI06D346B7
   url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-  returnUrl: http://103.75.183.179/api/payment/vnpay-return
+  returnUrl: https://api.furnimart.click/api/payment/vnpay-return
 
 springdoc:
   api-docs:
