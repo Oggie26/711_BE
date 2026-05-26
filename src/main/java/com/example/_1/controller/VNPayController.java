@@ -2,6 +2,7 @@ package com.example._1.controller;
 
 import com.example._1.entity.*;
 import com.example._1.enums.EnumOrderStatus;
+import com.example._1.enums.EnumPayment;
 import com.example._1.enums.ErrorCode;
 import com.example._1.exception.AppException;
 import com.example._1.repository.CartRepository;
@@ -79,6 +80,7 @@ public class VNPayController {
                         cart.getItems().clear();
                         cart.setTotalPrice(BigDecimal.ZERO);
                         cartRepository.save(cart);
+                        order.setPaymentMethod(EnumPayment.VNPAY);
                         orderRepository.save(order);
                     }
 
