@@ -3,9 +3,9 @@ spring:
     name: 711
 
   datasource:
-    url: jdbc:postgresql://turntable.proxy.rlwy.net:42746/railway
+    url: jdbc:postgresql://postgres:5432/711db
     username: postgres
-    password: NmOKvvmDHREiRCbHUKYBVzTAJLeibTHP
+    password: 123456
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -16,7 +16,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-
 jwt:
   secret: j4G$z8LpN9vJ^T3Qb7fE2k!wYcB1uL0zRxH5MvAhDpXsCgKj
   expiration: 86400000
@@ -26,8 +25,7 @@ vnpay:
   tmnCode: H9SLU363
   hashSecret: MH2TNFTKVRUU0O4I5VD373QI06D346B7
   url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-#  returnUrl: https://furnimart.click/api/v1/payment/vnpay-return
-  returnUrl: https://711-fe.vercel.app/api/payment/vnpay-return
+  returnUrl: http://103.75.183.179/api/payment/vnpay-return
 
 springdoc:
   api-docs:
