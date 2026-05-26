@@ -55,6 +55,10 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
 
+        if (cart.getItems().isEmpty()) {
+            throw new AppException(ErrorCode.CART_EMPTY);
+        }
+
         List<CartItem> cartItems = new ArrayList<>(cart.getItems());
 
         Order order = Order.builder()
