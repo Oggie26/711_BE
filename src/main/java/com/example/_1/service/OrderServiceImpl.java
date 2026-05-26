@@ -26,8 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,6 +63,13 @@ public class OrderServiceImpl implements OrderService {
         order.setItems(details);
 
         if (paymentMethod.equals(EnumPayment.CASH)){
+            for (OrderItem item : details) {
+                Product product = item.getProduct();
+                if (product.getStock() < item.getQuantity()) {
+                    throw new AppException(ErrorCode.OUT_OF_STOCK);
+                }
+                product.setStock(product.getStock() - item.getQuantity());
+            }
             order.setStatus(EnumOrderStatus.PAYMENT_SUCCESS);
             order.setPaymentMethod(paymentMethod);
             cart.getItems().clear();
