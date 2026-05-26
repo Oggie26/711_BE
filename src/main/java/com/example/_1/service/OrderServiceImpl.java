@@ -49,84 +49,6 @@ public class OrderServiceImpl implements OrderService {
                 .map(this::mapToOrderResponse)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
     }
-
-//    @Override
-//    @Transactional
-//    public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpServletRequest request) throws Exception {
-//        User user = userService.getCurrentUser();
-//        Cart cart = cartRepository.findById(cartId)
-//                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
-//
-//        if (cart.getItems().isEmpty()) {
-//            throw new AppException(ErrorCode.CART_EMPTY);
-//        }
-//
-//        List<CartItem> cartItems = new ArrayList<>(cart.getItems());
-//
-//        Order order = Order.builder()
-//                .user(user)
-//                .totalPrice(cart.getTotalPrice())
-//                .status(EnumOrderStatus.PENDING)
-//                .orderDate(LocalDateTime.now())
-//                .paymentMethod(paymentMethod)
-//                .items(new ArrayList<>())
-//                .build();
-//
-//        if (paymentMethod.equals(EnumPayment.CASH)) {
-//            List<OrderItem> orderItems = cartItems.stream().map(cartItem -> {
-//                Product product = cartItem.getProduct();
-//                if (product.getStock() < cartItem.getQuantity()) {
-//                    throw new AppException(ErrorCode.OUT_OF_STOCK);
-//                }
-//
-//                product.setStock(product.getStock() - cartItem.getQuantity());
-//                productRepository.save(product);
-//
-//                return OrderItem.builder()
-//                        .order(order)
-//                        .product(product)
-//                        .quantity(cartItem.getQuantity())
-//                        .price(cartItem.getPrice())
-//                        .build();
-//            }).toList();
-//
-//            order.getItems().addAll(orderItems);
-//            order.setStatus(EnumOrderStatus.PAYMENT_SUCCESS);
-//
-//        } else {
-//            List<OrderItem> items = cartItems.stream().map(cartItem ->
-//                    OrderItem.builder()
-//                            .order(order)
-//                            .product(cartItem.getProduct())
-//                            .quantity(cartItem.getQuantity())
-//                            .price(cartItem.getPrice())
-//                            .build()
-//            ).toList();
-//            order.getItems().addAll(items);
-//        }
-//
-//        Order savedOrder = orderRepository.save(order);
-//
-//        if (paymentMethod.equals(EnumPayment.CASH)) {
-//            cart.getItems().clear();
-//            cart.setTotalPrice(BigDecimal.ZERO);
-//            cartRepository.save(cart);
-//        }
-//
-//        if (paymentMethod.equals(EnumPayment.VNPAY)) {
-//            String paymentUrl = vNPayService.createPaymentUrl(
-//                    savedOrder.getId(),
-//                    savedOrder.getTotalPrice().doubleValue(),
-//                    request.getRemoteAddr()
-//            );
-//            OrderResponse response = mapToOrderResponse(savedOrder);
-//            response.setPaymentUrl(paymentUrl);
-//            return response;
-//        }
-//
-//        return mapToOrderResponse(savedOrder);
-//    }
-
     @Override
     @Transactional
     public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpServletRequest request) throws Exception {
@@ -139,6 +61,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Order order = buildOrder(cart,user);
+        order.setPaymentMethod(paymentMethod);
         List<OrderItem> details = createOrderItemsFromCart(cart, order);
         order.setItems(details);
 
