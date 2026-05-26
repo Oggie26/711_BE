@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,4 +29,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
         """,
             nativeQuery = true)
     Page<Category> searchByKeywordNative(@Param("keyword") String keyword, PageRequest pageable);
+    List<Category> findByNameContainingIgnoreCase(String name);
 }

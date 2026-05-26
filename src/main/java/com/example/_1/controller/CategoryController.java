@@ -45,6 +45,18 @@ public class CategoryController {
                 .build();
     }
 
+    @GetMapping("/by-name")
+    @Operation(summary = "Get categories by name")
+    public ApiResponse<List<CategoryResponse>> getByName(
+            @RequestParam String name) {
+
+        return ApiResponse.<List<CategoryResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .message("Categories filtered by name successfully")
+                .data(categoryService.getAllCategoriesByCategoryName(name))
+                .build();
+    }
+
     @PostMapping
     @Operation(summary = "Create a new category (Admin only)")
     @ResponseStatus(HttpStatus.CREATED)

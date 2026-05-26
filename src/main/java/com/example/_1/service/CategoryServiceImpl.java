@@ -80,6 +80,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<CategoryResponse> getAllCategoriesByCategoryName(String categoryName) {
+        return categoryRepository.findByNameContainingIgnoreCase(categoryName)
+                .stream()
+                .map(this::toCategoryResponse)
+                .toList();
+    }
+
+    @Override
     public PageResponse<CategoryResponse> searchCategories(String keyword, int page, int size) {
         PageRequest pageable = PageRequest.of(page, size);
         Page<Category> categoryPage = categoryRepository.searchByKeywordNative(keyword, pageable);
