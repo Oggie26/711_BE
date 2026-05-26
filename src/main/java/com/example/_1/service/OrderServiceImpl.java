@@ -48,73 +48,77 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
     }
 
-@Override
-@Transactional
-public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpServletRequest request) throws Exception {
-    User user = userService.getCurrentUser();
-    Cart cart = cartRepository.findById(cartId)
-            .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
+    @Override
+    @Transactional
+    public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpServletRequest request) throws Exception {
+        User user = userService.getCurrentUser();
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
 
-    Order order = Order.builder()
-            .user(user)
-            .totalPrice(cart.getTotalPrice())
-            .status(EnumOrderStatus.PENDING)
-            .orderDate(LocalDateTime.now())
-            .paymentMethod(paymentMethod)
-            .items(new ArrayList<>())
-            .build();
+        if (cart.getItems() == null || cart.getItems().isEmpty()) {
+            throw new AppException(ErrorCode.CART_EMPTY);
+        }
 
-    if (paymentMethod.equals(EnumPayment.CASH)) {
-        List<OrderItem> orderItems = cart.getItems().stream().map(cartItem -> {
-            Product product = cartItem.getProduct();
-            if (product.getStock() < cartItem.getQuantity()) {
-                throw new AppException(ErrorCode.OUT_OF_STOCK);
-            }
-            product.setStock(product.getStock() - cartItem.getQuantity());
-            productRepository.save(product);
-            return OrderItem.builder()
-                    .order(order)
-                    .product(product)
-                    .quantity(cartItem.getQuantity())
-                    .price(cartItem.getPrice())
-                    .build();
-        }).toList();
-        order.getItems().addAll(orderItems);
-        cart.getItems().clear();
-        cart.setTotalPrice(BigDecimal.ZERO);
-        order.setStatus(EnumOrderStatus.PAYMENT_SUCCESS);
-        orderRepository.save(order);
-        cartRepository.save(cart);
+        Order order = Order.builder()
+                .user(user)
+                .totalPrice(cart.getTotalPrice())
+                .status(EnumOrderStatus.PENDING)
+                .orderDate(LocalDateTime.now())
+                .paymentMethod(paymentMethod)
+                .items(new ArrayList<>())
+                .build();
 
+        if (paymentMethod.equals(EnumPayment.CASH)) {
+            List<OrderItem> orderItems = cart.getItems().stream().map(cartItem -> {
+                Product product = cartItem.getProduct();
+                if (product.getStock() < cartItem.getQuantity()) {
+                    throw new AppException(ErrorCode.OUT_OF_STOCK);
+                }
 
-    } else {
+                product.setStock(product.getStock() - cartItem.getQuantity());
 
-        List<OrderItem> items = cart.getItems().stream().map(cartItem ->
-                OrderItem.builder()
+                return OrderItem.builder()
                         .order(order)
-                        .product(cartItem.getProduct())
+                        .product(product)
                         .quantity(cartItem.getQuantity())
                         .price(cartItem.getPrice())
-                        .build()
-        ).toList();
-        order.getItems().addAll(items);
+                        .build();
+            }).toList();
+
+            order.getItems().addAll(orderItems);
+            order.setStatus(EnumOrderStatus.PAYMENT_SUCCESS);
+
+            cart.getItems().clear();
+            cart.setTotalPrice(BigDecimal.ZERO);
+            cartRepository.save(cart);
+
+        } else {
+            List<OrderItem> items = cart.getItems().stream().map(cartItem ->
+                    OrderItem.builder()
+                            .order(order)
+                            .product(cartItem.getProduct())
+                            .quantity(cartItem.getQuantity())
+                            .price(cartItem.getPrice())
+                            .build()
+            ).toList();
+            order.getItems().addAll(items);
+        }
+
+        Order savedOrder = orderRepository.save(order);
+
+        if (paymentMethod.equals(EnumPayment.VNPAY)) {
+            String paymentUrl = vNPayService.createPaymentUrl(
+                    savedOrder.getId(),
+                    savedOrder.getTotalPrice().doubleValue(),
+                    request.getRemoteAddr()
+            );
+            OrderResponse response = mapToOrderResponse(savedOrder);
+            response.setPaymentUrl(paymentUrl);
+            return response;
+        }
+
+        return mapToOrderResponse(savedOrder);
     }
-
-    Order savedOrder = orderRepository.save(order);
-
-    if (paymentMethod.equals(EnumPayment.VNPAY)) {
-        String paymentUrl = vNPayService.createPaymentUrl(
-                savedOrder.getId(),
-                savedOrder.getTotalPrice().doubleValue(),
-                request.getRemoteAddr()
-        );
-        OrderResponse response = mapToOrderResponse(savedOrder);
-        response.setPaymentUrl(paymentUrl);
-        return response;
-    }
-
-    return mapToOrderResponse(savedOrder);
-}
 
     @Transactional
     public OrderResponse updateOrder(OrderRequest orderRequest) {
