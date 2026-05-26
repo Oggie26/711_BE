@@ -48,91 +48,12 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
     }
 
-//    @Override
-//    @Transactional
-//    public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpServletRequest request)  {
-//
-//        User user = userService.getCurrentUser();
-//
-//        Cart cart = cartRepository.findById(cartId)
-//                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
-//
-//        if (cart.getItems() == null || cart.getItems().isEmpty()) {
-//            throw new AppException(ErrorCode.CART_EMPTY);
-//        }
-//
-//        Order order = Order.builder()
-//                .user(user)
-//                .totalPrice(cart.getTotalPrice())
-//                .status(EnumOrderStatus.PENDING)
-//                .orderDate(LocalDateTime.now())
-//                .paymentMethod(paymentMethod)
-//                .items(new ArrayList<>())
-//                .build();
-//
-//        List<OrderItem> orderItems = cart.getItems().stream().map(cartItem -> {
-//
-//            Product product = cartItem.getProduct();
-//
-//            if (product.getStock() < cartItem.getQuantity()) {
-//                throw new AppException(ErrorCode.OUT_OF_STOCK);
-//            }
-//
-//            product.setStock(product.getStock() - cartItem.getQuantity());
-//
-//            productRepository.save(product);
-//
-//            return OrderItem.builder()
-//                    .order(order)
-//                    .product(product)
-//                    .quantity(cartItem.getQuantity())
-//                    .price(cartItem.getPrice())
-//                    .build();
-//
-//        }).toList();
-//
-//        order.getItems().addAll(orderItems);
-//
-//        Order savedOrder = orderRepository.save(order);
-//
-//        if (paymentMethod.equals(EnumPayment.CASH)) {
-//
-//            cart.getItems().clear();
-//            cart.setTotalPrice(BigDecimal.ZERO);
-//
-//            cartRepository.save(cart);
-//
-//            return mapToOrderResponse(savedOrder);
-//        }
-//
-//        String paymentUrl;
-//
-//        try {
-//            paymentUrl = vNPayService.createPaymentUrl(
-//                    savedOrder.getId(),
-//                    savedOrder.getTotalPrice().doubleValue(),
-//                    request.getRemoteAddr()
-//            );
-//        } catch (Exception e) {
-//            throw new RuntimeException("Cannot create VNPay payment url", e);
-//        }
-//
-//        OrderResponse response = mapToOrderResponse(savedOrder);
-//
-//        response.setPaymentUrl(paymentUrl);
-//
-//        return response;
-//    }
 @Override
 @Transactional
 public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpServletRequest request) throws Exception {
     User user = userService.getCurrentUser();
     Cart cart = cartRepository.findById(cartId)
             .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
-
-    if (cart.getItems() == null || cart.getItems().isEmpty()) {
-        throw new AppException(ErrorCode.CART_EMPTY);
-    }
 
     Order order = Order.builder()
             .user(user)
