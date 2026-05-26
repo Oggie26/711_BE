@@ -61,12 +61,12 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Order order = buildOrder(cart,user);
-        order.setPaymentMethod(paymentMethod);
         List<OrderItem> details = createOrderItemsFromCart(cart, order);
         order.setItems(details);
 
         if (paymentMethod.equals(EnumPayment.CASH)){
             order.setStatus(EnumOrderStatus.PAYMENT_SUCCESS);
+            order.setPaymentMethod(paymentMethod);
             cart.getItems().clear();
             cart.setTotalPrice(BigDecimal.ZERO);
             cartRepository.save(cart);
