@@ -46,7 +46,7 @@ public class VNPayController {
         String orderId = vnpParams.get("vnp_TxnRef");
         String responseCode = vnpParams.get("vnp_ResponseCode");
 
-        String webUrl = "http://localhost:5173/payment-success";
+        String webUrl = "https://711-fe.vercel.app/payment-success";
 
         if (signValue.equalsIgnoreCase(secureHash)) {
 

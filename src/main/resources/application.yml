@@ -3,9 +3,9 @@ spring:
     name: 711
 
   datasource:
-    url: jdbc:postgresql://turntable.proxy.rlwy.net:42746/railway
+    url: jdbc:postgresql://postgres:5432/711db
     username: postgres
-    password: NmOKvvmDHREiRCbHUKYBVzTAJLeibTHP
+    password: 123456
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -15,7 +15,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
 
 jwt:
   secret: j4G$z8LpN9vJ^T3Qb7fE2k!wYcB1uL0zRxH5MvAhDpXsCgKj
