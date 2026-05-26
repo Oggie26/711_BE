@@ -44,8 +44,8 @@ public class OrderController {
 
     @GetMapping("/my-orders")
     @Operation(summary = "Get current user's latest order (User only)")
-    public ApiResponse<OrderResponse> getMyOrders() {
-        return ApiResponse.<OrderResponse>builder()
+    public ApiResponse<List<OrderResponse>> getMyOrders() {
+        return ApiResponse.<List<OrderResponse>>builder()
                 .status(HttpStatus.OK.value())
                 .message("Your latest order retrieved successfully")
                 .data(orderService.getOrderBySelf())

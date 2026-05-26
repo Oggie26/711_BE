@@ -232,13 +232,14 @@ public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpSer
     }
 
     @Override
-    @Transactional
-    public OrderResponse getOrderBySelf() {
+    @Transactional()
+    public List<OrderResponse> getOrderBySelf() {
         User user = userService.getCurrentUser();
+
         return orderRepository.findAll().stream()
-                .filter(order -> order.getUser().getId().equals(user.getId())).min((o1, o2) -> o2.getId().compareTo(o1.getId()))
+                .filter(order -> order.getUser() != null && order.getUser().getId().equals(user.getId()))
                 .map(this::mapToOrderResponse)
-                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+                .toList();
     }
 
     @Override

@@ -16,6 +16,6 @@ public interface OrderService {
     OrderResponse deleteOrder(Long id);
     List<OrderResponse> getAllOrders();
     PageResponse<OrderResponse> searchOrders(String request, int page, int size);
-    OrderResponse getOrderBySelf();
+    List<OrderResponse> getOrderBySelf();
     void checkOut(Long orderId);
 }
