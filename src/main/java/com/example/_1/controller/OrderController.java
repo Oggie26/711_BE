@@ -26,7 +26,6 @@ public class OrderController {
 
     @PostMapping
     @Operation(summary = "Create a new order from a cart (User only)")
-    @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<OrderResponse> createOrder(
             @Valid
@@ -45,7 +44,6 @@ public class OrderController {
 
     @GetMapping("/my-orders")
     @Operation(summary = "Get current user's latest order (User only)")
-    @PreAuthorize("hasRole('USER')")
     public ApiResponse<OrderResponse> getMyOrders() {
         return ApiResponse.<OrderResponse>builder()
                 .status(HttpStatus.OK.value())

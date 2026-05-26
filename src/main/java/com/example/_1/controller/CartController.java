@@ -26,7 +26,6 @@ public class CartController {
 
     @GetMapping
     @Operation(summary = "Xem giỏ hàng")
-    @PreAuthorize("hasRole('USER')")
     public ApiResponse<CartResponse> getCart() {
         return ApiResponse.<CartResponse>builder()
                 .status(HttpStatus.OK.value())
@@ -37,7 +36,6 @@ public class CartController {
 
     @PostMapping("/items")
     @Operation(summary = "Thêm sản phẩm vào giỏ hàng")
-    @PreAuthorize("hasRole('USER')")
     public ApiResponse<Void> addProduct(@Valid @RequestBody CartItemRequest request) {
         cartService.addProductToCart(request.getProductId(), request.getQuantity());
         return ApiResponse.<Void>builder()
@@ -48,7 +46,6 @@ public class CartController {
 
     @PatchMapping("/items")
     @Operation(summary = "Cập nhật số lượng sản phẩm")
-    @PreAuthorize("hasRole('USER')")
     public ApiResponse<Void> updateQuantity(@Valid @RequestBody CartItemRequest request) {
         cartService.updateProductQuantityInCart(request.getProductId(), request.getQuantity());
         return ApiResponse.<Void>builder()
@@ -59,7 +56,6 @@ public class CartController {
 
     @DeleteMapping("/items")
     @Operation(summary = "Xóa sản phẩm khỏi giỏ hàng")
-    @PreAuthorize("hasRole('USER')")
     public ApiResponse<Void> removeItems(@RequestBody List<Long> productId) {
         cartService.removeProductFromCart(productId);
         return ApiResponse.<Void>builder()
