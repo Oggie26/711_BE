@@ -161,9 +161,10 @@ public OrderResponse createOrder(Long cartId, EnumPayment paymentMethod, HttpSer
         order.getItems().addAll(orderItems);
         cart.getItems().clear();
         cart.setTotalPrice(BigDecimal.ZERO);
-        cartRepository.save(cart);
         order.setStatus(EnumOrderStatus.PAYMENT_SUCCESS);
         orderRepository.save(order);
+        cartRepository.save(cart);
+
 
     } else {
 
