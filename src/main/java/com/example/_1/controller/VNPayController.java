@@ -79,7 +79,6 @@ public class VNPayController {
                         cart.getItems().clear();
                         cart.setTotalPrice(BigDecimal.ZERO);
                         cartRepository.save(cart);
-
                         orderRepository.save(order);
                     }
 

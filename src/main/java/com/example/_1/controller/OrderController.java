@@ -37,7 +37,7 @@ public class OrderController {
         return ApiResponse.<OrderResponse>builder()
                 .status(HttpStatus.CREATED.value())
                 .message("Order created successfully")
-                .data(orderService.createOrder(cartId, paymentMethod, request))
+                .data(response)
                 .redirectUrl(response.getPaymentUrl())
                 .build();
     }
