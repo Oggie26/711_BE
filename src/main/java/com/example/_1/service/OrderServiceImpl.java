@@ -144,10 +144,10 @@ public class OrderServiceImpl implements OrderService {
 
         if (paymentMethod.equals(EnumPayment.CASH)){
             order.setStatus(EnumOrderStatus.PAYMENT_SUCCESS);
+            cart.getItems().clear();
+            cart.setTotalPrice(BigDecimal.ZERO);
+            cartRepository.save(cart);
         }
-        cart.getItems().clear();
-        cart.setTotalPrice(BigDecimal.ZERO);
-        cartRepository.save(cart);
         orderRepository.save(order);
 
         if (paymentMethod.equals(EnumPayment.VNPAY)) {
