@@ -46,7 +46,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(List.of("https://711-fe.vercel.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -77,8 +77,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/api/products/**",
                                 "/api/categories/**",
-                                "/api/v1/payment/**",
-                                "/api/v1/payment-return/**",
+                                "/api/payment/**",
+                                "/api/payment-return/**",
                                 "/swagger-ui.html"
                         ).permitAll()
 
