@@ -61,31 +61,25 @@ public class VNPayController {
                     Order order = orderRepository.findById(Long.parseLong(orderId))
                             .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
-
-                    Cart cart = cartRepository.findByUser(order.getUser())
-                            .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
-
                     if (order.getStatus() != EnumOrderStatus.PAYMENT_SUCCESS) {
                         order.setStatus(EnumOrderStatus.PAYMENT_SUCCESS);
 
-                        List<OrderItem> orderItems = cart.getItems().stream().map(cartItem -> {
-                            Product product = cartItem.getProduct();
-                            if (product.getStock() < cartItem.getQuantity()) {
+                        for (OrderItem orderItem : order.getItems()) {
+                            Product product = orderItem.getProduct();
+                            if (product.getStock() < orderItem.getQuantity()) {
                                 throw new AppException(ErrorCode.OUT_OF_STOCK);
                             }
-                            product.setStock(product.getStock() - cartItem.getQuantity());
+                            product.setStock(product.getStock() - orderItem.getQuantity());
                             productRepository.save(product);
-                            return OrderItem.builder()
-                                    .order(order)
-                                    .product(product)
-                                    .quantity(cartItem.getQuantity())
-                                    .price(cartItem.getPrice())
-                                    .build();
-                        }).toList();
-                        order.getItems().addAll(orderItems);
+                        }
+
+                        Cart cart = cartRepository.findByUser(order.getUser())
+                                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
+
                         cart.getItems().clear();
                         cart.setTotalPrice(BigDecimal.ZERO);
                         cartRepository.save(cart);
+
                         orderRepository.save(order);
                     }
 
