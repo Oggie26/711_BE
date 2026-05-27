@@ -5,15 +5,13 @@ services:
   postgres:
     image: postgres:16
     container_name: postgres_711
-    restart: always
+    restart: unless-stopped
 
     environment:
       POSTGRES_DB: 711db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
-
-    ports:
-      - "5432:5432"
+      TZ: Asia/Ho_Chi_Minh
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -21,7 +19,7 @@ services:
   backend:
     build: .
     container_name: backend_711
-    restart: always
+    restart: unless-stopped
 
     depends_on:
       - postgres
@@ -30,9 +28,13 @@ services:
       - "8080:8080"
 
     environment:
+      TZ: Asia/Ho_Chi_Minh
+
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/711db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 123456
+
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
       JWT_SECRET: j4G$z8LpN9vJ^T3Qb7fE2k!wYcB1uL0zRxH5MvAhDpXsCgKj
       JWT_EXPIRATION: 86400000
@@ -41,7 +43,8 @@ services:
       VNPAY_TMNCODE: H9SLU363
       VNPAY_HASHSECRET: MH2TNFTKVRUU0O4I5VD373QI06D346B7
       VNPAY_URL: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-      VNPAY_RETURNURL: http://103.75.183.179/api/payment/vnpay-return
+
+      VNPAY_RETURNURL: https://api.furnimart.click/api/payment/vnpay-return
 
 volumes:
   postgres_data:
