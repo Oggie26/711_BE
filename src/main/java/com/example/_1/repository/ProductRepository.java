@@ -16,26 +16,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findBySlugAndIsDeletedFalse(String slug);
     Page<Product> findByCategoryIdAndIsDeletedFalse(Long categoryId, Pageable pageable);
     @Query(value = """
-        SELECT * FROM products
-        WHERE is_deleted = false
-          AND (
-                LOWER(name) LIKE LOWER(CONCAT('%', :keyword, '%'))
-                OR LOWER(description) LIKE LOWER(CONCAT('%', :keyword, '%'))
-              )
-        """,
+    SELECT * FROM products
+    WHERE is_deleted = false
+      AND LOWER(name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    """,
             countQuery = """
-        SELECT COUNT(*) FROM products
-        WHERE is_deleted = false
-          AND (
-                LOWER(name) LIKE LOWER(CONCAT('%', :keyword, '%'))
-                OR LOWER(description) LIKE LOWER(CONCAT('%', :keyword, '%'))
-              )
-        """,
+    SELECT COUNT(*) FROM products
+    WHERE is_deleted = false
+      AND LOWER(name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    """,
             nativeQuery = true)
     Page<Product> searchByKeywordNative(
             @Param("keyword") String keyword,
             Pageable pageable
     );
-
     long countByIsDeletedFalse();
 }
